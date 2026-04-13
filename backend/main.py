@@ -15,7 +15,7 @@ app = FastAPI(title="JustinPay!", description="FinTech NFC payment wallet", vers
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Welcome!"}
 
 @app.post("/register", response_model=CreateUser)
 def register(req: RegisterReq, db: curr_session):
