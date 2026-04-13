@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-
 from sqlalchemy import String, Column, Integer, DateTime, ForeignKey, Float
 from backend.database.connect_db import Base
 

@@ -1,16 +1,12 @@
 from datetime import timedelta
-from enum import verify
 from typing import Annotated
 
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import BaseModel
-from sqlalchemy.sql.functions import current_user
 
 from backend.database.connect_db import Base, engine, curr_session
 from backend.database import models
-from backend.security.JWT import currentUser, TokenResponse, verify_token, verify_refresh_token, oauth2_bearer, \
-    create_access_token
+from backend.security.JWT import currentUser, TokenResponse, verify_refresh_token, oauth2_bearer, create_access_token
 from backend.security.accounts import register_user, CreateUser, RegisterReq, LoginReq, login_user, logout_user
 
 Base.metadata.create_all(bind=engine)
@@ -20,13 +16,6 @@ app = FastAPI(title="JustinPay!", description="FinTech NFC payment wallet", vers
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
-
 
 @app.post("/register", response_model=CreateUser)
 def register(req: RegisterReq, db: curr_session):
