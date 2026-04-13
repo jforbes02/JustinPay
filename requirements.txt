@@ -1,2 +1,8 @@
 sqlalchemy==2.1.0b1
 psycopg[binary]==3.3.3
+fastapi==0.135.3
+python-dotenv==1.2.2
+pyjwt==2.12.1
+argon2-cffi==25.1.0
+pydantic==2.12.5
+python-multipart==0.0.26
