@@ -8,9 +8,10 @@ from backend.database.connect_db import Base, engine, curr_session
 from backend.database import models
 from backend.security.JWT import currentUser, TokenResponse, verify_refresh_token, oauth2_bearer, create_access_token
 from backend.security.accounts import register_user, CreateUser, RegisterReq, LoginReq, login_user, logout_user
+from backend.transactions.service import send_crypto, SendCryptoRequest, get_balance
 
 Base.metadata.create_all(bind=engine)
-app = FastAPI(title="JustinPay!", description="FinTech NFC payment wallet", version="0.0.1")
+app = FastAPI(title="JustinPay!", description="FinTech Crypto ETH payment wallet", version="0.0.1")
 
 
 @app.get("/")
@@ -47,5 +48,16 @@ def refresh(req: Annotated[str, Depends(oauth2_bearer)]):
     return {"access_token": new_access, "refresh": req, "token_type": "bearer"}
 
 @app.post("/logout")
-def logout_route(token: Annotated[str, Depends(oauth2_bearer)], db: curr_session):
-    return logout_user(token=token, db=db)
+def logout_route(req: Annotated[str, Depends(oauth2_bearer)], db: curr_session):
+    return logout_user(token=req, db=db)
+
+@app.post("/send-crypto", response_model=SendCryptoRequest)
+async def send_crypto_route(req: SendCryptoRequest, db: curr_session, current_user: currentUser):
+    return await send_crypto(db=db, send_id=int(current_user["id"]), receiver_id=req.receiver_id, amount=req.amount, signed_tx=req.signed_tx)
+
+@app.get("/wallet")
+async def wallet(db: curr_session, current_user: currentUser):
+    user = db.query(models.User).filter(models.User.user_id == int(current_user["id"])).first()
+    balance = await get_balance(user.wallet_address)
+
+    return {"address": user.wallet_address, "balance": float(balance)}

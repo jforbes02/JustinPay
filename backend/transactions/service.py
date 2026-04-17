@@ -1,0 +1,82 @@
+from datetime import datetime
+from fastapi import HTTPException
+
+import dotenv
+from pydantic import BaseModel
+from web3 import AsyncWeb3
+import os
+from backend.database.connect_db import curr_session
+from backend.database.models import User, Transaction
+dotenv.load_dotenv()
+
+INFURA_KEY = os.getenv("INFURA_API_KEY")
+w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider(
+    f'https://mainnet.infura.io/v3/{INFURA_KEY}'
+))
+
+
+class SendCryptoRequest(BaseModel):
+    receiver_id: int
+    amount: float
+    signed_tx: str
+
+async def get_balance(address: str) -> float:
+    """Gets how much eth user has in wallet"""
+    wei_bal = await w3.eth.get_balance(address)
+    balance_eth = w3.from_wei(wei_bal, "ether")
+    return balance_eth
+
+async def send_crypto(db: curr_session, send_id: int, receiver_id: int, amount: float, signed_tx: str) -> dict:
+    """Checks Blockchain connection, checks senders balance, and then starts the transaction from already_signed transaction from client side then log it in db"""
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be positive")
+    if send_id == receiver_id:
+        raise HTTPException(status_code=400, detail="Cannot send to yourself")
+
+
+    #connecting to blockchain
+    if not await w3.is_connected():
+        raise HTTPException(status_code=503, detail="Connection to Blockchain failed")
+
+    #Checking for user's in db
+    sender = db.query(User).filter(User.user_id == send_id).first()
+    if not sender:
+        raise HTTPException(status_code=404, detail="Sender not found in db")
+
+    receiver = db.query(User).filter(User.user_id == receiver_id).first()
+    if not receiver:
+        raise HTTPException(status_code=404, detail="Receiver not found in db")
+
+    #Seeing how much ETH the sender has in his wallet
+    my_wallet = sender.wallet_address
+    my_eth_total = await get_balance(my_wallet)
+
+    if my_eth_total < amount:
+        raise HTTPException(status_code=400, detail="I don't have enough Eth to give")
+
+    try:
+        tx_hash = await w3.eth.send_raw_transaction(signed_tx)
+
+
+        new_transaction = Transaction(
+            sender_id = send_id,
+            receiver_id = receiver_id,
+            amount = amount,
+            time = datetime.now(),
+            status = "pending",
+            tx_hash = tx_hash.hex()
+
+        )
+
+        db.add(new_transaction)
+        db.commit()
+        db.refresh(new_transaction)
+
+        return {
+            "transaction_id": new_transaction.id,
+            "tx_hash": tx_hash.hex(),
+            "amount": amount,
+            "status": "complete"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Transaction failed: {str(e)}")
