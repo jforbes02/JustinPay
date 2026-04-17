@@ -8,7 +8,7 @@ from backend.database.connect_db import Base, engine, curr_session
 from backend.database import models
 from backend.security.JWT import currentUser, TokenResponse, verify_refresh_token, oauth2_bearer, create_access_token
 from backend.security.accounts import register_user, CreateUser, RegisterReq, LoginReq, login_user, logout_user
-from backend.transactions.service import send_crypto, SendCryptoRequest, get_balance
+from backend.transactions.service import send_crypto, SendCryptoRequest, get_balance, trans_history
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="JustinPay!", description="FinTech Crypto ETH payment wallet", version="0.0.1")
@@ -61,3 +61,7 @@ async def wallet(db: curr_session, current_user: currentUser):
     balance = await get_balance(user.wallet_address)
 
     return {"address": user.wallet_address, "balance": float(balance)}
+
+@app.get("/transactions/history")
+async def transaction_history(db: curr_session, current_user: currentUser):
+    return await trans_history(db=db, user_id=int(current_user["id"]))

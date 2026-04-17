@@ -80,3 +80,26 @@ async def send_crypto(db: curr_session, send_id: int, receiver_id: int, amount: 
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Transaction failed: {str(e)}")
+
+async def trans_history(db: curr_session, user_id: int) -> list:
+    """Gets the 5 most recent transactions sent or received by users and returns json record of the transactions"""
+    transactions = (
+        db.query(Transaction)
+        .filter((Transaction.sender_id == user_id) | (Transaction.receiver_id == user_id))
+        .order_by(Transaction.time.desc())
+        .limit(5)
+        .all()
+    )
+    #can use pagination in the future
+    return [
+        {
+            "id": tx.id,
+            "sender_id": tx.sender_id,
+            "receiver_id": tx.receiver_id,
+            "amount": tx.amount,
+            "status": tx.status,
+            "time": tx.time,
+            "tx_hash": tx.tx_hash,
+        }
+        for tx in transactions
+    ]

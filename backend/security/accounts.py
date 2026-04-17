@@ -76,7 +76,6 @@ class LoginReq(BaseModel):
 
 
 
-
 def login_user(db: curr_session, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
     if not user:
