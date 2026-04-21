@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="0bff6095-c060-444e-8690-55d454004df1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/deviceManager.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/frontend.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/.vscode/extensions.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/.vscode/settings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(auth)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(auth)/login.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(auth)/register.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(tabs)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(tabs)/explore.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/(tabs)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/app/modal.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/android-icon-background.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/android-icon-foreground.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/android-icon-monochrome.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/favicon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/partial-react-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/react-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/react-logo@2x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/react-logo@3x.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/images/splash-icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/external-link.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/haptic-tab.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/hello-wave.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/parallax-scroll-view.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/themed-text.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/themed-view.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/ui/collapsible.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/ui/icon-symbol.ios.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/components/ui/icon-symbol.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/constants/theme.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/eslint.config.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/hooks/use-color-scheme.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/hooks/use-color-scheme.web.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/hooks/use-theme-color.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/scripts/reset-project.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/tsconfig.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="3CdaA4FzkHIzRRjBTE181GSQMzI" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "44d269fe",
+    "kotlin-language-version-configured": "true",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/Users/jus/Development/JustinPay/frontend/app/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.32098.37" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.32098.37" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0bff6095-c060-444e-8690-55d454004df1" name="Changes" comment="" />
+      <created>1776717754432</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776717754432</updated>
+      <workItem from="1776717755681" duration="3604000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

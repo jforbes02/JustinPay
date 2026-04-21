@@ -1,1 +1,29 @@
+# Environment
 .env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# Frontend
+node_modules/
+frontend/app/.expo/
+frontend/app/dist/
+frontend/app/web-build/
+frontend/app/expo-env.d.ts
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# macOS
+.DS_Store
+/frontend/app/node_modules/
