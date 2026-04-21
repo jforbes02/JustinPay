@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { AppColors } from '@/constants/theme';
+import { AuthStore } from '@/store/auth';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -36,7 +37,15 @@ export default function LoginScreen() {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.detail ?? 'Invalid credentials');
       }
-      // TODO: persist tokens — service layer step
+      const data = await res.json();
+      AuthStore.setToken(data.access_token);
+      const meRes = await fetch('http://149.61.235.200:8000/me', {
+        headers: { Authorization: `Bearer ${data.access_token}` },
+      });
+      if (meRes.ok) {
+        const me = await meRes.json();
+        AuthStore.setUser(me.id, me.username);
+      }
       router.replace('/(tabs)');
     } catch (e: any) {
       Alert.alert('Login Failed', e.message ?? 'Something went wrong.');

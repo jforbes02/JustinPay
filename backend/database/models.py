@@ -36,4 +36,3 @@ class Blacklist(Base):
     id = Column(Integer, primary_key=True)
     token = Column(String, nullable=False, unique=True)
     blacklisted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-
