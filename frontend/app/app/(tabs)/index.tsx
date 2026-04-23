@@ -159,21 +159,32 @@ export default function DashboardScreen() {
               <Text style={styles.addressFull}>{address}</Text>
             </View>
 
-            {/* NFC Button */}
-            <TouchableOpacity
-              style={styles.nfcButton}
-              activeOpacity={0.85}
-              onPress={() => Alert.alert('NFC', 'NFC payments coming soon.')}
-            >
-              <View style={styles.nfcIconWrapper}>
-                <Ionicons name="radio-outline" size={30} color={AppColors.primary} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.nfcTitle}>Tap to Pay</Text>
-                <Text style={styles.nfcSubtitle}>Hold your phone near an NFC reader</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color={AppColors.textSecondary} />
-            </TouchableOpacity>
+            {/* Actions */}
+            <View style={styles.actionsRow}>
+              <TouchableOpacity
+                style={styles.actionBtn}
+                activeOpacity={0.85}
+                onPress={() => router.push('/(tabs)/send')}
+              >
+                <View style={[styles.actionIcon, styles.actionIconSend]}>
+                  <Ionicons name="arrow-up" size={24} color="#fff" />
+                </View>
+                <Text style={styles.actionLabel}>Send</Text>
+                <Text style={styles.actionSub}>Tap to pay</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.actionBtn}
+                activeOpacity={0.85}
+                onPress={() => router.push('/(tabs)/receive')}
+              >
+                <View style={[styles.actionIcon, styles.actionIconReceive]}>
+                  <Ionicons name="arrow-down" size={24} color="#fff" />
+                </View>
+                <Text style={styles.actionLabel}>Receive</Text>
+                <Text style={styles.actionSub}>Show QR / NFC</Text>
+              </TouchableOpacity>
+            </View>
 
             {/* Transaction History */}
             <View style={styles.sectionHeader}>
@@ -371,34 +382,41 @@ const styles = StyleSheet.create({
     color: AppColors.textSecondary,
     letterSpacing: 0.3,
   },
-  nfcButton: {
+  actionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 32,
+  },
+  actionBtn: {
+    flex: 1,
     backgroundColor: AppColors.surface,
     borderRadius: 18,
     padding: 20,
     borderWidth: 1,
     borderColor: AppColors.border,
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    marginBottom: 32,
+    gap: 8,
   },
-  nfcIconWrapper: {
+  actionIcon: {
     width: 52,
     height: 52,
     borderRadius: 16,
-    backgroundColor: AppColors.inputBg,
-    borderWidth: 1,
-    borderColor: AppColors.borderFocused,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 4,
   },
-  nfcTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+  actionIconSend: {
+    backgroundColor: AppColors.primary,
+  },
+  actionIconReceive: {
+    backgroundColor: '#7C3AED',
+  },
+  actionLabel: {
+    fontSize: 15,
+    fontWeight: '700',
     color: AppColors.textPrimary,
-    marginBottom: 3,
   },
-  nfcSubtitle: {
+  actionSub: {
     fontSize: 12,
     color: AppColors.textSecondary,
   },

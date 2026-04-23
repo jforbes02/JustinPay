@@ -20,6 +20,37 @@ class SendCryptoRequest(BaseModel):
     amount: float
     signed_tx: str
 
+class TxParams(BaseModel):
+    nonce: int
+    gas_price: int
+    gas_limit: int
+    chain_id: int
+    value_wei: int
+
+async def get_tx_params(from_address: str, to_address: str, amount: float) -> TxParams:
+    """Builds unsigned transaction parameters for the client to sign locally."""
+    if not await w3.is_connected():
+        raise HTTPException(status_code=503, detail="Connection to Blockchain failed")
+
+    nonce = await w3.eth.get_transaction_count(w3.to_checksum_address(from_address))
+    gas_price = await w3.eth.gas_price
+    chain_id = await w3.eth.chain_id
+    value_wei = w3.to_wei(amount, "ether")
+
+    gas_limit = await w3.eth.estimate_gas({
+        "from": w3.to_checksum_address(from_address),
+        "to": w3.to_checksum_address(to_address),
+        "value": value_wei,
+    })
+
+    return TxParams(
+        nonce=nonce,
+        gas_price=gas_price,
+        gas_limit=gas_limit,
+        chain_id=chain_id,
+        value_wei=value_wei,
+    )
+
 async def get_balance(address: str) -> float:
     """Gets how much eth user has in wallet"""
     wei_bal = await w3.eth.get_balance(address)

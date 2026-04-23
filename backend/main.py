@@ -8,7 +8,7 @@ from backend.database.connect_db import Base, engine, curr_session
 from backend.database import models
 from backend.security.JWT import currentUser, TokenResponse, verify_refresh_token, oauth2_bearer, create_access_token
 from backend.security.accounts import register_user, CreateUser, RegisterReq, LoginReq, login_user, logout_user
-from backend.transactions.service import send_crypto, SendCryptoRequest, get_balance, trans_history
+from backend.transactions.service import send_crypto, SendCryptoRequest, get_balance, trans_history, get_tx_params, TxParams
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="JustinPay!", description="FinTech Crypto ETH payment wallet", version="0.0.1")
@@ -54,6 +54,11 @@ def logout_route(req: Annotated[str, Depends(oauth2_bearer)], db: curr_session):
 @app.post("/send-crypto", response_model=SendCryptoRequest)
 async def send_crypto_route(req: SendCryptoRequest, db: curr_session, current_user: currentUser):
     return await send_crypto(db=db, send_id=int(current_user["id"]), receiver_id=req.receiver_id, amount=req.amount, signed_tx=req.signed_tx)
+
+@app.get("/wallet/tx-params", response_model=TxParams)
+async def tx_params(to: str, amount: float, db: curr_session, current_user: currentUser):
+    sender = db.query(models.User).filter(models.User.user_id == int(current_user["id"])).first()
+    return await get_tx_params(from_address=sender.wallet_address, to_address=to, amount=amount)
 
 @app.get("/wallet")
 async def wallet(db: curr_session, current_user: currentUser):
