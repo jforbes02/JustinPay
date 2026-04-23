@@ -13,6 +13,7 @@ import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { AppColors } from '@/constants/theme';
+import { API } from '@/constants/api';
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState('');
@@ -28,7 +29,7 @@ export default function RegisterScreen() {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://149.61.235.200:8000/register', {
+      const res = await fetch(`${API}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -15,8 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppColors } from '@/constants/theme';
 import { AuthStore } from '@/store/auth';
 import { router } from 'expo-router';
-
-const API = 'http://149.61.235.200:8000';
+import { API } from '@/constants/api';
 
 function truncateAddress(address: string) {
   if (!address) return '';

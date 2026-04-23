@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { AppColors } from '@/constants/theme';
 import { AuthStore } from '@/store/auth';
+import { API } from '@/constants/api';
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
@@ -28,7 +29,7 @@ export default function LoginScreen() {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://149.61.235.200:8000/login', {
+      const res = await fetch(`${API}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username.trim(), password }),
@@ -39,7 +40,7 @@ export default function LoginScreen() {
       }
       const data = await res.json();
       AuthStore.setToken(data.access_token);
-      const meRes = await fetch('http://149.61.235.200:8000/me', {
+      const meRes = await fetch(`${API}/me`, {
         headers: { Authorization: `Bearer ${data.access_token}` },
       });
       if (meRes.ok) {
