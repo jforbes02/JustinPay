@@ -20,8 +20,10 @@ How it works:
 ### Flow:
 -  B opens "Receive" screen
 -	 Screen shows button to enable NFC
--  A can either:
--    → Tap phone (NFC)  — Android to Android
+-  A opens send screen
+-  A types in amount
+-  Tap phone (NFC)  — Android to Android
+-  DONE!
 ## Features
 
 - **User Authentication** — Register, login, and logout with JWT-based access/refresh token flow and secure password hashing (Argon2)
