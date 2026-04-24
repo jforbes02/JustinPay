@@ -4,7 +4,7 @@ A FinTech mobile application for sending and receiving Ethereum (ETH) cryptocurr
 
 ---
 ### Problem
-	If someone wants to trade crypto with someone they either have to type in a full address or scan a QR code (42 characters huge)
+If someone wants to trade crypto with someone they either have to type in a full address or scan a QR code (42 characters huge)
 
 ## How Do We Solve This?
 	Both users open the app
