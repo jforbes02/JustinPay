@@ -7,9 +7,9 @@ A FinTech mobile application for sending and receiving Ethereum (ETH) cryptocurr
 If someone wants to trade crypto with someone they either have to type in a full address or scan a QR code (42 characters huge)
 
 ## How Do We Solve This?
-	Both users open the app
-	Tap phones
-	Done!
+Both users open the app
+Tap phones
+Done!
 
 Crypto payments between people require manually copying 42-character wallet addresses — a process that is slow, error-prone, and completely impractical for in-person transactions. TapChain solves this by using NFC to instantly and securely exchange wallet addresses between devices, making crypto transfers as seamless as a fist bump
 
