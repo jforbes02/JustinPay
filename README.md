@@ -35,6 +35,16 @@ How it works:
 - **Token Blacklisting** — Invalidated tokens are tracked server-side to ensure secure logout
 
 ---
+## Security Architecture — Frontend Signing, Backend Everything Else
+ 
+For robustness and security, JustinPay deliberately splits responsibilities between the client and the server:
+ 
+- **Transaction signing happens exclusively on the frontend.** The user's private key never leaves the device. Using `ethers.js`, the React Native client signs Ethereum transactions locally before anything is sent over the network. This means the backend never has access to user keys and cannot be compromised into signing transactions on a user's behalf — even in the event of a server breach, funds remain safe.
+- **Everything else is handled by the backend.** Authentication (JWT issuance/refresh/blacklisting), user records, wallet address lookups, transaction parameter fetching (nonce, gas price, chain ID), broadcasting signed transactions to the Ethereum mainnet via Web3, and persisting transaction history are all centralized server-side. This gives us a single source of truth, consistent validation, and the ability to patch logic without shipping a new mobile build.
+This separation follows the principle of least privilege: the client holds the keys but nothing else, and the backend holds the data but never the keys. The result is a more robust system where neither side alone is a single point of failure for user funds.
+
+---
+
 
 ## Tech Stack
 
