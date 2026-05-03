@@ -1,13 +1,18 @@
 from datetime import datetime
 from fastapi import HTTPException
-
+from decimal import Decimal
 import dotenv
 from pydantic import BaseModel
 from web3 import AsyncWeb3
 import os
+import time
+import httpx
 from backend.database.connect_db import curr_session
 from backend.database.models import User, Transaction
 dotenv.load_dotenv()
+
+_eth_price_cache: dict = {"price": None, "ts": 0.0}
+PRICE_TTL = 60  # seconds
 
 INFURA_KEY = os.getenv("INFURA_API_KEY")
 w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider(
@@ -51,11 +56,35 @@ async def get_tx_params(from_address: str, to_address: str, amount: float) -> Tx
         value_wei=value_wei,
     )
 
-async def get_balance(address: str) -> float:
-    """Gets how much eth user has in wallet"""
+async def get_eth_price_usd() -> float:
+    """Fetches live ETH/USD price from CoinGecko, cached for 60s."""
+    now = time.monotonic()
+    if _eth_price_cache["price"] is not None and now - _eth_price_cache["ts"] < PRICE_TTL:
+        return _eth_price_cache["price"]
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            "https://api.coingecko.com/api/v3/simple/price",
+            params={"ids": "ethereum", "vs_currencies": "usd"},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        price = float(resp.json()["ethereum"]["usd"])
+    _eth_price_cache["price"] = price
+    _eth_price_cache["ts"] = now
+    return price
+
+def usd_to_wei(usd: float, eth_price_usd: float) -> int:
+    eth_amount = Decimal(str(usd)) / Decimal(str(eth_price_usd))
+    wei = int(eth_amount * Decimal('1e18'))
+    return wei
+
+async def get_balance(address: str, eth_price: float | None = None) -> dict:
+    """Gets wallet balance in both ETH and USD."""
     wei_bal = await w3.eth.get_balance(address)
-    balance_eth = w3.from_wei(wei_bal, "ether")
-    return balance_eth
+    balance_eth = float(w3.from_wei(wei_bal, "ether"))
+    if eth_price is None:
+        eth_price = await get_eth_price_usd()
+    return {"eth": balance_eth, "usd": balance_eth * eth_price}
 
 async def send_crypto(db: curr_session, send_id: int, receiver_id: int, amount: float, signed_tx: str) -> dict:
     """Checks Blockchain connection, checks senders balance, and then starts the transaction from already_signed transaction from client side then log it in db"""
@@ -64,10 +93,15 @@ async def send_crypto(db: curr_session, send_id: int, receiver_id: int, amount: 
     if send_id == receiver_id:
         raise HTTPException(status_code=400, detail="Cannot send to yourself")
 
-
     #connecting to blockchain
     if not await w3.is_connected():
         raise HTTPException(status_code=503, detail="Connection to Blockchain failed")
+
+    # $1 USD minimum
+    eth_price = await get_eth_price_usd()
+    amount_usd = amount * eth_price
+    if amount_usd < 1.00:
+        raise HTTPException(status_code=400, detail=f"Minimum send is $1.00 USD (you sent ${amount_usd:.4f})")
 
     #Checking for user's in db
     sender = db.query(User).filter(User.user_id == send_id).first()
@@ -80,9 +114,9 @@ async def send_crypto(db: curr_session, send_id: int, receiver_id: int, amount: 
 
     #Seeing how much ETH the sender has in his wallet
     my_wallet = sender.wallet_address
-    my_eth_total = await get_balance(my_wallet)
+    balance = await get_balance(my_wallet, eth_price)
 
-    if my_eth_total < amount:
+    if balance["eth"] < amount:
         raise HTTPException(status_code=400, detail="I don't have enough Eth to give")
 
     try:

@@ -1,3 +1,25 @@
+/**
+ * use-nfc.ts
+ *
+ * Cross-platform NFC hook for JustinPay phone-to-phone payments.
+ *
+ * Android:
+ *   - Receiver activates Host Card Emulation (HCE) via a native Kotlin service
+ *     (HCEPaymentService.kt), making their phone behave like an NFC payment card.
+ *   - Sender uses IsoDep to establish a connection and pull the payment payload
+ *     (userId + wallet address) directly from the receiver's phone.
+ *   - Communication uses a custom AID (F0JUSTINPAY) over APDU commands —
+ *     SELECT picks the app, then a GET command returns the payload bytes.
+ *
+ * iOS:
+ *   - Apple does not allow apps to emulate NFC cards (no HCE API).
+ *   - Receiver shows a QR code encoding the same payload string.
+ *   - Sender scans the QR with the camera (expo-camera).
+ *
+ * Payload format: "justinpay:<userId>:<walletAddress>"
+ * This string is what gets transmitted over NFC or encoded in the QR code.
+ */
+
 import { useState } from 'react';
 import { Platform, NativeModules } from 'react-native';
 import NfcManager, { NfcTech, Ndef } from 'react-native-nfc-manager';
@@ -9,12 +31,15 @@ export interface NfcPaymentPayload {
 
 const PREFIX = 'justinpay:';
 
-// AID: F0 + "JUSTINPAY" in ASCII — must match apduservice.xml
+// APDU SELECT command for our custom AID: F0 + "JUSTINPAY" in ASCII hex.
+// Must match the AID registered in android/app/src/main/res/xml/apduservice.xml.
 const SELECT_AID = [
   0x00, 0xa4, 0x04, 0x00, 0x0a,
   0xf0, 0x4a, 0x55, 0x53, 0x54, 0x49, 0x4e, 0x50, 0x41, 0x59,
   0x00,
 ];
+
+// APDU GET command — tells HCEPaymentService to return the payload bytes.
 const GET_PAYLOAD = [0x00, 0xca, 0x00, 0x00, 0x00];
 
 export function encodePayload(userId: number | string, address: string): string {
@@ -34,7 +59,11 @@ export function decodePayload(raw: string): NfcPaymentPayload {
 export function useNfc() {
   const [scanning, setScanning] = useState(false);
 
-  // Android only — read from another phone acting as HCE card
+  /**
+   * Android sender — taps the receiver's phone.
+   * Opens an IsoDep (ISO 14443-4) channel, selects our AID,
+   * then reads the payment payload bytes from the receiver's HCE service.
+   */
   const readFromPhone = async (): Promise<NfcPaymentPayload> => {
     setScanning(true);
     try {
@@ -47,6 +76,7 @@ export function useNfc() {
       const dataResp = await NfcManager.isoDepHandler.transceive(GET_PAYLOAD);
       if (dataResp[dataResp.length - 2] !== 0x90) throw new Error('Failed to retrieve payload.');
 
+      // Strip the two trailing status bytes (0x90 0x00) to get the raw payload string.
       const payloadBytes = dataResp.slice(0, -2);
       const text = String.fromCharCode(...payloadBytes);
       return decodePayload(text);
@@ -56,7 +86,11 @@ export function useNfc() {
     }
   };
 
-  // Android only — make this phone act as an NFC card (HCE)
+  /**
+   * Android receiver — activates HCE so this phone acts as an NFC card.
+   * Writes the payload to SharedPreferences where HCEPaymentService reads it.
+   * NfcPayload is a native Kotlin module (NfcPayloadModule.kt) bridged to JS.
+   */
   const startHceReceiver = (userId: number | string, address: string) => {
     if (!NativeModules.NfcPayload) return;
     NativeModules.NfcPayload.setPayload(encodePayload(userId, address));
@@ -67,7 +101,7 @@ export function useNfc() {
     NativeModules.NfcPayload.clearPayload();
   };
 
-  // Fallback for NFC sticker read (both platforms)
+  // Fallback: read from a physical NFC sticker (both platforms).
   const readPaymentTag = async (): Promise<NfcPaymentPayload> => {
     setScanning(true);
     try {
@@ -84,7 +118,7 @@ export function useNfc() {
     }
   };
 
-  // Fallback for NFC sticker write (both platforms)
+  // Fallback: write payment info to a physical NFC sticker (both platforms).
   const writeToTag = async (userId: number | string, address: string): Promise<void> => {
     setScanning(true);
     try {

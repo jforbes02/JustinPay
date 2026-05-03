@@ -65,7 +65,7 @@ async def wallet(db: curr_session, current_user: currentUser):
     user = db.query(models.User).filter(models.User.user_id == int(current_user["id"])).first()
     balance = await get_balance(user.wallet_address)
 
-    return {"address": user.wallet_address, "balance": float(balance)}
+    return {"address": user.wallet_address, "balance_eth": balance["eth"], "balance_usd": balance["usd"]}
 
 @app.get("/transactions/history")
 async def transaction_history(db: curr_session, current_user: currentUser):

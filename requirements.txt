@@ -7,3 +7,4 @@ argon2-cffi==25.1.0
 pydantic==2.12.5
 python-multipart==0.0.26
 web3==8.0.0b1
+httpx==..0.28.1

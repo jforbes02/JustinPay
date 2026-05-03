@@ -44,7 +44,7 @@ type Transaction = {
 
 export default function DashboardScreen() {
   const [address, setAddress] = useState('');
-  const [balance, setBalance] = useState<number | null>(null);
+  const [balance, setBalance] = useState<{ eth: number; usd: number } | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -62,7 +62,7 @@ export default function DashboardScreen() {
       if (walletRes.ok) {
         const wallet = await walletRes.json();
         setAddress(wallet.address);
-        setBalance(wallet.balance);
+        setBalance({ eth: wallet.balance_eth, usd: wallet.balance_usd });
       }
 
       if (historyRes.ok) {
@@ -141,9 +141,12 @@ export default function DashboardScreen() {
               <View style={styles.balanceRow}>
                 <Text style={styles.ethSymbol}>Ξ</Text>
                 <Text style={styles.balanceAmount}>
-                  {balance !== null ? balance.toFixed(6) : '—'}
+                  {balance !== null ? balance.eth.toFixed(6) : '—'}
                 </Text>
               </View>
+              <Text style={styles.balanceUsd}>
+                {balance !== null ? `$${balance.usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USD` : '—'}
+              </Text>
               <Text style={styles.balanceCurrency}>ETH · Ethereum Mainnet</Text>
             </View>
 
@@ -338,6 +341,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     letterSpacing: -1,
     lineHeight: 56,
+  },
+  balanceUsd: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.85)',
+    marginBottom: 6,
   },
   balanceCurrency: {
     fontSize: 13,
